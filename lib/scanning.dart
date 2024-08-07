@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QrScannerScreen extends StatefulWidget {
   const QrScannerScreen({super.key});
@@ -34,25 +35,30 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   Future<void> _verifyQRCode(String? code) async {
     if (code == null) return;
 
-    // Fetch the document from Firebase
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('your_collection').doc(code).get();
+    try {
+      // Fetch the document from Firebase
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('your_collection').doc(code).get();
 
-    if (docSnapshot.exists) {
-      // Cross-verify the scanned document ID with the existing IDs
-      var data = docSnapshot.data() as Map<String, dynamic>;
-      if (data['soc_id'] == 'expected_soc_id' && !data['is_scanned']) {
-        // Mark the document as scanned
-        await FirebaseFirestore.instance.collection('your_collection').doc(code).update({'is_scanned': true});
+      if (docSnapshot.exists) {
+        // Cross-verify the scanned document ID with the existing IDs
+        var data = docSnapshot.data() as Map<String, dynamic>;
+        if (data['soc_id'] == 'expected_soc_id' && !data['is_scanned']) {
+          // Mark the document as scanned
+          await FirebaseFirestore.instance.collection('your_collection').doc(code).update({'is_scanned': true});
 
-        // Verification successful
-        _showMessage('Verification complete');
+          // Verification successful
+          _showMessage('Verification complete');
+        } else {
+          // Already scanned or verification failed
+          _showMessage('Verification failed or already scanned');
+        }
       } else {
-        // Already scanned or verification failed
-        _showMessage('Verification failed or already scanned');
+        // Document does not exist
+        _showMessage('Invalid QR code');
       }
-    } else {
-      // Document does not exist
-      _showMessage('Invalid QR code');
+    } catch (e) {
+      // Handle any errors
+      _showMessage('Error occurred: $e');
     }
   }
 

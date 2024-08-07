@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "332281449681",
+    "firebase_url": "https://qr-code-form-b7550-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "qr-code-form-b7550",
+    "storage_bucket": "qr-code-form-b7550.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332281449681:android:101e02359ae526ab1689f0",
+        "android_client_info": {
+          "package_name": "com.example.qr_scanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC456YFtq10dLzt4yVgjAbuy7HcdPhn7kE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
