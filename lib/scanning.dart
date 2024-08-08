@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:qr_scanner/verifiedPeopleScreen.dart';
 
 class QrScannerScreen extends StatefulWidget {
   const QrScannerScreen({super.key});
@@ -13,6 +14,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   bool hasScanned = false;
+  final List<Map<String, dynamic>> verifiedPeople = [];
 
   @override
   void dispose() {
@@ -28,39 +30,33 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           hasScanned = true;
         });
         await _verifyQRCode(scanData.code);
-
       }
     });
   }
 
   Future<void> _verifyQRCode(String? code) async {
     if (code == null) return;
-      print(code);
     try {
-      // Fetch the document from Firebase
       DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('responses').doc(code).get();
-      
+
       if (docSnapshot.exists) {
-        // Cross-verify the scanned document ID with the existing IDs
         var data = docSnapshot.data() as Map<String, dynamic>;
 
-        print(data);
-        if (docSnapshot.id == code ) {
-          // Mark the document as scanned
+        if (docSnapshot.id == code) {
           await FirebaseFirestore.instance.collection('responses').doc(code).update({'is_scanned': true});
 
-          // Verification successful
+          setState(() {
+            verifiedPeople.add(data);
+          });
+
           _showMessage('Verification complete');
         } else {
-          // Already scanned or verification failed
           _showMessage('Verification failed or already scanned');
         }
       } else {
-        // Document does not exist
         _showMessage('Invalid QR code');
       }
     } catch (e) {
-      // Handle any errors
       _showMessage('Error occurred: $e');
     }
   }
@@ -73,7 +69,17 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              Navigator.of(context).pop();
+              if (verifiedPeople.isNotEmpty) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerifiedPeopleScreen(),
+                  ),
+                );
+              }
+            },
             child: const Text('OK'),
           ),
         ],
@@ -88,7 +94,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
         title: const Text('QR Scanner'),
       ),
       body: Column(
-        children: <Widget>[
+        children: [
           Expanded(
             flex: 5,
             child: QRView(
