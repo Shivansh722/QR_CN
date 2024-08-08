@@ -28,23 +28,26 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           hasScanned = true;
         });
         await _verifyQRCode(scanData.code);
+
       }
     });
   }
 
   Future<void> _verifyQRCode(String? code) async {
     if (code == null) return;
-
+      print(code);
     try {
       // Fetch the document from Firebase
-      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('your_collection').doc(code).get();
-
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('responses').doc(code).get();
+      
       if (docSnapshot.exists) {
         // Cross-verify the scanned document ID with the existing IDs
         var data = docSnapshot.data() as Map<String, dynamic>;
-        if (data['soc_id'] == 'expected_soc_id' && !data['is_scanned']) {
+
+        print(data);
+        if (docSnapshot.id == code ) {
           // Mark the document as scanned
-          await FirebaseFirestore.instance.collection('your_collection').doc(code).update({'is_scanned': true});
+          await FirebaseFirestore.instance.collection('responses').doc(code).update({'is_scanned': true});
 
           // Verification successful
           _showMessage('Verification complete');
