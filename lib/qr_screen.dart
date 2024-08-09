@@ -16,7 +16,7 @@ class _QrScreenState extends State<QrScreen> {
     // Get the screen width and height using MediaQuery
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     // Determine the padding and container height based on screen size
     final double paddingValue = screenWidth * 0.02;
     final double containerHeight = screenHeight * 0.12;
@@ -24,8 +24,14 @@ class _QrScreenState extends State<QrScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Scanner'),
-      ),
+  backgroundColor: Colors.black,
+  title: Center(
+    child: Text('QR Scanner',
+      style: TextStyle(color: Colors.white),
+    ),
+  ),
+),
+      backgroundColor: Colors.black, // Set background color to black
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -42,7 +48,7 @@ class _QrScreenState extends State<QrScreen> {
                   height: containerHeight,
                   padding: EdgeInsets.all(paddingValue),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey[850], // Set the tile background to dark grey
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
@@ -56,14 +62,14 @@ class _QrScreenState extends State<QrScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.all(paddingValue),
-                        child: const Icon(Icons.people, color: Colors.blue),
+                        child: const Icon(Icons.people, color: Colors.white), // Icon color set to white
                       ),
                       Expanded(
                         child: Center(
                           child: Text(
                             'Registered People',
                             style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.white, // Text color set to white
                               fontSize: screenWidth * 0.06,
                               fontWeight: FontWeight.bold,
                             ),
@@ -89,7 +95,7 @@ class _QrScreenState extends State<QrScreen> {
                   height: containerHeight,
                   padding: EdgeInsets.all(paddingValue),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey[850], // Set the tile background to dark grey
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
@@ -103,14 +109,14 @@ class _QrScreenState extends State<QrScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.all(paddingValue),
-                        child: const Icon(Icons.check_circle, color: Colors.green),
+                        child: const Icon(Icons.check_circle, color: Colors.white), // Icon color set to white
                       ),
                       Expanded(
                         child: Center(
                           child: Text(
                             'Verified People',
                             style: TextStyle(
-                              color: Colors.green,
+                              color: Colors.white, // Text color set to white
                               fontSize: screenWidth * 0.06,
                               fontWeight: FontWeight.bold,
                             ),

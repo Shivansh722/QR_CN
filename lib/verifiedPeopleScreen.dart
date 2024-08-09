@@ -27,14 +27,13 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
       final data = jsonDecode(response.body);
       final responseText = data['response'] as String;
 
-      // Extract boys and girls count using regex
       final boysMatch = RegExp(r'Boys: (\d+)').firstMatch(responseText);
       final girlsMatch = RegExp(r'Girls: (\d+)').firstMatch(responseText);
 
       setState(() {
         boysCount = int.tryParse(boysMatch?.group(1) ?? '0') ?? 0;
         girlsCount = int.tryParse(girlsMatch?.group(1) ?? '0') ?? 0;
-        hasFetchedGenderCount = true;  // Set the flag to true after fetching
+        hasFetchedGenderCount = true;
       });
     } else {
       throw Exception('Failed to load gender counts');
@@ -45,12 +44,17 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verified People'),
+        centerTitle: true,
+        title: const Text('Verified People', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0.0,
       ),
+      backgroundColor: Colors.black,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.grey.shade300, Colors.grey.shade600],
+            colors: [Colors.grey.shade900, Colors.grey.shade700],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -62,7 +66,7 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Center(child: Text('Error loading data'));
+              return const Center(child: Text('Error loading data', style: TextStyle(color: Colors.white)));
             }
 
             if (!snapshot.hasData) {
@@ -72,7 +76,6 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
             final data = snapshot.data!.docs;
             final List<String> names = data.map((doc) => doc['name'] as String).toList();
 
-            // Fetch gender counts only if it hasn't been fetched yet
             if (!hasFetchedGenderCount) {
               _getGenderCount(names);
             }
@@ -83,7 +86,7 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Total Verified People: ${data.length}',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
                 Padding(
@@ -93,11 +96,11 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
                     children: [
                       Text(
                         'Boys: $boysCount',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
                       ),
                       Text(
                         'Girls: $girlsCount',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ],
                   ),
@@ -115,17 +118,24 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.grey[850],
                             borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 6.0,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: ListTile(
-                            contentPadding: const EdgeInsets.all(16.0),
-                            title: Text(name),
+                            leading: const Icon(Icons.person, color: Colors.white),
+                            title: Text(name, style: const TextStyle(color: Colors.white)),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Email: $email'),
-                                Text('Phone: $phone'),
+                                Text('Email: $email', style: const TextStyle(color: Colors.white70)),
+                                Text('Phone: $phone', style: const TextStyle(color: Colors.white70)),
                               ],
                             ),
                           ),

@@ -52,7 +52,7 @@ class _RegisteredPplState extends State<RegisteredPpl> {
       await launch(url);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch WhatsApp for this number')),
+        const SnackBar(content: Text('Could not launch WhatsApp for this number')),
       );
     }
   }
@@ -63,17 +63,18 @@ class _RegisteredPplState extends State<RegisteredPpl> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete $name?'),
+          backgroundColor: Colors.grey[900], // Dark grey background
+          title: const Text('Confirm Deletion', style: TextStyle(color: Colors.white)),
+          content: Text('Are you sure you want to delete $name?', style: const TextStyle(color: Colors.white)),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Delete'),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
               onPressed: () async {
                 Navigator.of(context).pop();
                 await _deleteUser(docId);
@@ -95,14 +96,24 @@ class _RegisteredPplState extends State<RegisteredPpl> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registered People'),
-      ),
+    appBar: AppBar(
+  centerTitle: true,
+  title: const Text('Registered People',
+    style: TextStyle(color: Colors.white)),
+  backgroundColor: Colors.transparent, // Set background to transparent
+  iconTheme: IconThemeData(color: Colors.white), // Keep icons white
+
+  // Additional properties for full transparency (optional)
+  elevation: 0.0, // Remove shadow effect
+  forceMaterialTransparency: true, // Force transparency (for gestures to pass through)
+),
+
+      backgroundColor: Colors.black, // Set screen background to black
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('responses').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading data'));
+            return const Center(child: Text('Error loading data', style: TextStyle(color: Colors.white)));
           }
 
           if (!snapshot.hasData) {
@@ -120,7 +131,7 @@ class _RegisteredPplState extends State<RegisteredPpl> {
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.grey.shade300, Colors.grey.shade600],
+                colors: [Colors.grey.shade900, Colors.grey.shade700],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -131,7 +142,7 @@ class _RegisteredPplState extends State<RegisteredPpl> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Total Registered People: $totalRegistered',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
                 Padding(
@@ -141,11 +152,11 @@ class _RegisteredPplState extends State<RegisteredPpl> {
                     children: [
                       Text(
                         'Boys: $boysCount',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
                       ),
                       Text(
                         'Girls: $girlsCount',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ],
                   ),
@@ -186,9 +197,9 @@ class _RegisteredPplState extends State<RegisteredPpl> {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.grey[850], // Dark grey for the tile background
                               borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                   color: Colors.black26,
                                   blurRadius: 6.0,
@@ -197,13 +208,13 @@ class _RegisteredPplState extends State<RegisteredPpl> {
                               ],
                             ),
                             child: ListTile(
-                              leading: Icon(Icons.person, color: Colors.blue),
-                              title: Text(name),
+                              leading: const Icon(Icons.person, color: Colors.white),
+                              title: Text(name, style: const TextStyle(color: Colors.white)),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Email: $email'),
-                                  Text('Phone: $phone'),
+                                  Text('Email: $email', style: const TextStyle(color: Colors.white70)),
+                                  Text('Phone: $phone', style: const TextStyle(color: Colors.white70)),
                                 ],
                               ),
                             ),
