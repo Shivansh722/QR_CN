@@ -13,6 +13,15 @@ class QrScreen extends StatefulWidget {
 class _QrScreenState extends State<QrScreen> {
   @override
   Widget build(BuildContext context) {
+    // Get the screen width and height using MediaQuery
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    
+    // Determine the padding and container height based on screen size
+    final double paddingValue = screenWidth * 0.02;
+    final double containerHeight = screenHeight * 0.12;
+    final double imageHeight = screenHeight * 0.25;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('QR Scanner'),
@@ -28,32 +37,36 @@ class _QrScreenState extends State<QrScreen> {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(paddingValue),
                 child: Container(
-                  height: 100,
-                  padding: const EdgeInsets.all(6.0),
+                  height: containerHeight,
+                  padding: EdgeInsets.all(paddingValue),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(15), // Curved corners
+                    borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 6.0,
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Row(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.people, color: Colors.blue),
+                      Padding(
+                        padding: EdgeInsets.all(paddingValue),
+                        child: const Icon(Icons.people, color: Colors.blue),
                       ),
                       Expanded(
                         child: Center(
                           child: Text(
                             'Registered People',
-                            style: TextStyle(color: Colors.blue, fontSize: 24, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: screenWidth * 0.06,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -62,7 +75,7 @@ class _QrScreenState extends State<QrScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: screenHeight * 0.01),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -71,32 +84,36 @@ class _QrScreenState extends State<QrScreen> {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(paddingValue),
                 child: Container(
-                  height: 100,
-                  padding: const EdgeInsets.all(6.0),
+                  height: containerHeight,
+                  padding: EdgeInsets.all(paddingValue),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(15), // Curved corners
+                    borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 6.0,
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Row(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.check_circle, color: Colors.green),
+                      Padding(
+                        padding: EdgeInsets.all(paddingValue),
+                        child: const Icon(Icons.check_circle, color: Colors.green),
                       ),
                       Expanded(
                         child: Center(
                           child: Text(
                             'Verified People',
-                            style: TextStyle(color: Colors.green, fontSize: 24, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontSize: screenWidth * 0.06,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -105,7 +122,7 @@ class _QrScreenState extends State<QrScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 200),
+            SizedBox(height: screenHeight * 0.2),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -114,15 +131,15 @@ class _QrScreenState extends State<QrScreen> {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(paddingValue),
                 child: Container(
-                  height: 200, // Adjust the height as needed
-                  decoration: BoxDecoration(
+                  height: imageHeight,
+                  decoration: const BoxDecoration(
                     color: Colors.transparent,
                   ),
                   child: Image.asset(
                     'assets/qr2.gif',
-                    width: 300, // Make the image as wide as possible
+                    width: screenWidth * 0.8,
                     fit: BoxFit.cover,
                   ),
                 ),
