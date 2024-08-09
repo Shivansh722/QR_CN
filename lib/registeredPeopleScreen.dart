@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisteredPpl extends StatefulWidget {
@@ -27,24 +28,39 @@ class _RegisteredPplState extends State<RegisteredPpl> {
       final data = jsonDecode(response.body);
       final responseText = data['response'] as String;
 
-      // Extract boys and girls count using regex
       final boysMatch = RegExp(r'Boys: (\d+)').firstMatch(responseText);
       final girlsMatch = RegExp(r'Girls: (\d+)').firstMatch(responseText);
 
       setState(() {
         boysCount = int.tryParse(boysMatch?.group(1) ?? '0') ?? 0;
         girlsCount = int.tryParse(girlsMatch?.group(1) ?? '0') ?? 0;
-        hasFetchedGenderCount = true;  // Set the flag to true after fetching
+        hasFetchedGenderCount = true;
       });
     } else {
       throw Exception('Failed to load gender counts');
     }
   }
 
+  Future<void> _launchWhatsApp(String phoneNumber) async {
+    String formattedPhoneNumber = phoneNumber.startsWith('0')
+        ? phoneNumber.substring(1)
+        : phoneNumber;
+
+    final url = 'https://wa.me/91$formattedPhoneNumber';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch WhatsApp for this number')),
+      );
+    }
+  }
+
   Future<void> _showDeleteConfirmationDialog(String docId, String name) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // User must tap a button to close the dialog
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirm Deletion'),
@@ -53,13 +69,13 @@ class _RegisteredPplState extends State<RegisteredPpl> {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text('Delete'),
               onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 await _deleteUser(docId);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('$name removed')),
@@ -97,7 +113,6 @@ class _RegisteredPplState extends State<RegisteredPpl> {
           final totalRegistered = data.length;
           final List<String> names = data.map((doc) => doc['name'] as String).toList();
 
-          // Fetch gender counts only if it hasn't been fetched yet
           if (!hasFetchedGenderCount) {
             _getGenderCount(names);
           }
@@ -147,11 +162,21 @@ class _RegisteredPplState extends State<RegisteredPpl> {
 
                       return Dismissible(
                         key: Key(docId),
-                        direction: DismissDirection.endToStart,
+                        direction: DismissDirection.horizontal,
                         onDismissed: (direction) {
-                          _showDeleteConfirmationDialog(docId, name);
+                          if (direction == DismissDirection.startToEnd) {
+                            _launchWhatsApp(phone);
+                          } else if (direction == DismissDirection.endToStart) {
+                            _showDeleteConfirmationDialog(docId, name);
+                          }
                         },
                         background: Container(
+                          color: Colors.green,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(Icons.message, color: Colors.white),
+                        ),
+                        secondaryBackground: Container(
                           color: Colors.red,
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.symmetric(horizontal: 20),

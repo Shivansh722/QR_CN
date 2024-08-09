@@ -39,6 +39,7 @@ dependencies:
   qr_code_scanner: ^1.0.1
   cloud_firestore: ^5.2.1
   http:
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
