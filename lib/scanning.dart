@@ -5,7 +5,6 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_scanner/verifiedPeopleScreen.dart';
 
-
 class QrScannerScreen extends StatefulWidget {
   const QrScannerScreen({super.key});
 
@@ -27,6 +26,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
+
     controller.scannedDataStream.listen((scanData) async {
       if (!hasScanned) {
         setState(() {
@@ -65,50 +65,48 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   }
 
   void _showMessage(String message) {
-  // Trigger vibration first
-  _triggerVibration();
+    _triggerVibration();
 
-  // Then show the dialog
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Verification Result'),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            if (verifiedPeople.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerifiedPeopleScreen(),
-                ),
-              );
-            }
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    ),
-  );
-}
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Verification Result'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              if (verifiedPeople.isNotEmpty) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerifiedPeopleScreen(),
+                  ),
+                );
+              }
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
-void _triggerVibration() async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    if (await Vibrate.canVibrate) {
-      Vibrate.vibrate();
+  void _triggerVibration() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      if (await Vibrate.canVibrate) {
+        Vibrate.vibrate();
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('QR Scanner',
+        title: const Text(
+          'QR Scanner',
           style: TextStyle(color: Colors.white),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -120,9 +118,14 @@ void _triggerVibration() async {
           QRView(
             key: qrKey,
             onQRViewCreated: _onQRViewCreated,
+            overlay: QrScannerOverlayShape(
+              borderColor: Colors.white,
+              borderRadius: 20,
+              borderLength: 30,
+              borderWidth: 8,
+              cutOutSize: MediaQuery.of(context).size.width * 0.8, // Adjust the cutout size
+            ),
           ),
-          // Overlay for QR scanner to make it look stylish
-          _buildOverlay(),
           // Bottom message
           Positioned(
             bottom: 50.0,
@@ -150,80 +153,6 @@ void _triggerVibration() async {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildOverlay() {
-    return Stack(
-      children: [
-        // Top left black overlay
-        Align(
-          alignment: Alignment.topLeft,
-          child: Container(
-            color: Colors.black.withOpacity(0.6),
-            height: 100,
-            width: 100,
-          ),
-        ),
-        // Top right black overlay
-        Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            color: Colors.black.withOpacity(0.6),
-            height: 100,
-            width: 100,
-          ),
-        ),
-        // Bottom left black overlay
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            color: Colors.black.withOpacity(0.6),
-            height: 100,
-            width: 100,
-          ),
-        ),
-        // Bottom right black overlay
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            color: Colors.black.withOpacity(0.6),
-            height: 100,
-            width: 100,
-          ),
-        ),
-        // Center transparent cutout for scanning
-        Center(
-  child: Container(
-    width: 300,
-    height: 300,
-    decoration: BoxDecoration(
-      // Rounded corners
-      borderRadius: BorderRadius.circular(20),
-      // Thicker and bold borders for the corners
-      border: Border.all(
-        color: Colors.white,
-        width: 6, // Make this thicker than the other borders
-      ),
-    ),
-    // Adding inner container for the corners to be even thicker
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.white, width: 8),
-            bottom: BorderSide(color: Colors.white, width: 8),
-            left: BorderSide(color: Colors.white, width: 8),
-            right: BorderSide(color: Colors.white, width: 8),
-          ),
-        ),
-      ),
-    ),
-  ),
-),
-
-      ],
     );
   }
 }
