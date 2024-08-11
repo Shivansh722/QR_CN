@@ -194,7 +194,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     child: ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
             top: BorderSide(color: Colors.white, width: 8),
             bottom: BorderSide(color: Colors.white, width: 8),

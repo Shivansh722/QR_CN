@@ -44,7 +44,7 @@ class _QrScreenState extends State<QrScreen> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.all(paddingValue),
+                padding: EdgeInsets.all(20),
                 child: Container(
                   height: containerHeight,
                   padding: EdgeInsets.all(paddingValue),
@@ -63,7 +63,8 @@ class _QrScreenState extends State<QrScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.all(paddingValue),
-                        child: const Icon(Icons.people, color: Colors.white), // Icon color set to white
+                        child: const Icon(Icons.people, color: Colors.white,
+                        size: 50,), // Icon color set to white
                       ),
                       Expanded(
                         child: Center(
@@ -82,7 +83,7 @@ class _QrScreenState extends State<QrScreen> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.01),
+            
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -91,7 +92,7 @@ class _QrScreenState extends State<QrScreen> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.all(paddingValue),
+                padding: EdgeInsets.all(20),
                 child: Container(
                   height: containerHeight,
                   padding: EdgeInsets.all(paddingValue),
@@ -110,7 +111,8 @@ class _QrScreenState extends State<QrScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.all(paddingValue),
-                        child: const Icon(Icons.check_circle, color: Colors.white), // Icon color set to white
+                        child: const Icon(Icons.check_circle, color: Colors.white,
+                        size: 50,), // Icon color set to white
                       ),
                       Expanded(
                         child: Center(
