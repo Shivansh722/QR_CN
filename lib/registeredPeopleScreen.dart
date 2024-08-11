@@ -15,6 +15,7 @@ class _RegisteredPplState extends State<RegisteredPpl> {
   int boysCount = 0;
   int girlsCount = 0;
   bool hasFetchedGenderCount = false;
+  String searchQuery = "";
 
   Future<void> _getGenderCount(List<String> names) async {
     final url = Uri.parse('https://gender-counter.onrender.com/count');
@@ -96,18 +97,14 @@ class _RegisteredPplState extends State<RegisteredPpl> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    appBar: AppBar(
-  centerTitle: true,
-  title: const Text('Registered People',
-    style: TextStyle(color: Colors.white)),
-  backgroundColor: Colors.transparent, // Set background to transparent
-  iconTheme: IconThemeData(color: Colors.white), // Keep icons white
-
-  // Additional properties for full transparency (optional)
-  elevation: 0.0, // Remove shadow effect
-  forceMaterialTransparency: true, // Force transparency (for gestures to pass through)
-),
-
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Registered People', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.transparent, // Set background to transparent
+        iconTheme: IconThemeData(color: Colors.white), // Keep icons white
+        elevation: 0.0, // Remove shadow effect
+        forceMaterialTransparency: true, // Force transparency (for gestures to pass through)
+      ),
       backgroundColor: Colors.black, // Set screen background to black
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('responses').snapshots(),
@@ -127,6 +124,12 @@ class _RegisteredPplState extends State<RegisteredPpl> {
           if (!hasFetchedGenderCount) {
             _getGenderCount(names);
           }
+
+          // Filter the list based on search query
+          final filteredData = data.where((doc) {
+            final name = doc['name'] as String? ?? '';
+            return name.toLowerCase().contains(searchQuery.toLowerCase());
+          }).toList();
 
           return Container(
             decoration: BoxDecoration(
@@ -161,11 +164,36 @@ class _RegisteredPplState extends State<RegisteredPpl> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+
+                      hintText: 'Search by name',
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      prefixIcon: const Icon(Icons.search, color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white70),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onChanged: (query) {
+                      setState(() {
+                        searchQuery = query;
+                      });
+                    },
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: data.length,
+                    itemCount: filteredData.length,
                     itemBuilder: (context, index) {
-                      final doc = data[index];
+                      final doc = filteredData[index];
                       final name = doc['name'] ?? 'No name';
                       final email = doc['email'] ?? 'No email';
                       final phone = doc['phone'] ?? 'No phone';

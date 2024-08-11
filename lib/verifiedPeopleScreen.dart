@@ -14,6 +14,8 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
   int boysCount = 0;
   int girlsCount = 0;
   bool hasFetchedGenderCount = false;
+  String searchQuery = ''; // To store the current search query
+  final TextEditingController searchController = TextEditingController(); // Controller for the search bar
 
   Future<void> _getGenderCount(List<String> names) async {
     final url = Uri.parse('https://gender-counter.onrender.com/count');
@@ -80,12 +82,19 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
               _getGenderCount(names);
             }
 
+            // Filter the data based on the search query
+            final filteredData = data.where((doc) {
+              final name = doc['name']?.toLowerCase() ?? '';
+              return name.contains(searchQuery.toLowerCase());
+            }).toList();
+
             return Column(
               children: [
+               
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Total Verified People: ${data.length}',
+                    'Total Verified People: ${filteredData.length}',
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
@@ -105,11 +114,38 @@ class _VerifiedPeopleScreenState extends State<VerifiedPeopleScreen> {
                     ],
                   ),
                 ),
+                
+                 Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: searchController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Search by name',
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      prefixIcon: const Icon(Icons.search, color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white70),
+                        borderRadius: BorderRadius.circular(30.0), // Rounded borders
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(30.0), // Rounded borders
+                      ),
+                    ),
+                    onChanged: (query) {
+                      setState(() {
+                        searchQuery = query;
+                      });
+                    },
+                  ),
+                ),
+                
                 Expanded(
                   child: ListView.builder(
-                    itemCount: data.length,
+                    itemCount: filteredData.length,
                     itemBuilder: (context, index) {
-                      final doc = data[index];
+                      final doc = filteredData[index];
                       final name = doc['name'] ?? 'No name';
                       final email = doc['email'] ?? 'No email';
                       final phone = doc['phone'] ?? 'No phone';

@@ -3,6 +3,7 @@ import 'package:qr_scanner/scanning.dart';
 import 'package:qr_scanner/verifiedPeopleScreen.dart';
 import 'package:qr_scanner/registeredPeopleScreen.dart';
 
+
 class QrScreen extends StatefulWidget {
   const QrScreen({super.key});
 
