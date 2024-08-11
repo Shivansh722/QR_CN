@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_scanner/verifiedPeopleScreen.dart';
+
 
 class QrScannerScreen extends StatefulWidget {
   const QrScannerScreen({super.key});
@@ -62,30 +65,43 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   }
 
   void _showMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Verification Result'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              if (verifiedPeople.isNotEmpty) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VerifiedPeopleScreen(),
-                  ),
-                );
-              }
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+  // Trigger vibration first
+  _triggerVibration();
+
+  // Then show the dialog
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Verification Result'),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            if (verifiedPeople.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VerifiedPeopleScreen(),
+                ),
+              );
+            }
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _triggerVibration() async {
+  if (Platform.isAndroid || Platform.isIOS) {
+    if (await Vibrate.canVibrate) {
+      Vibrate.vibrate();
+    }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +210,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     child: ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
             top: BorderSide(color: Colors.white, width: 8),
             bottom: BorderSide(color: Colors.white, width: 8),

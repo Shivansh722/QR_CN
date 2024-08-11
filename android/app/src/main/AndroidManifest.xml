@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.qr_scanner"> <!-- Ensure this matches your Firebase project -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:label="qr_scanner"
         android:name="${applicationName}"
