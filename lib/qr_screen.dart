@@ -69,7 +69,7 @@ class _QrScreenState extends State<QrScreen> {
                       Expanded(
                         child: Center(
                           child: Text(
-                            'Registered People',
+                            'Registered Teams',
                             style: TextStyle(
                               color: Colors.white, // Text color set to white
                               fontSize: screenWidth * 0.06,
